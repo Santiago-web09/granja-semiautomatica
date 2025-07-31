@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Granja Semiautomática</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #27ae60;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo::before {
+            content: "🌱";
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #27ae60;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #27ae60;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .page {
+            display: none;
+            padding-top: 100px;
+            min-height: 100vh;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .feature-card:hover {
+            border-color: #27ae60;
+            transform: scale(1.05);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            color: #27ae60;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+        
+        .tech-section {
+            margin: 3rem 0;
+        }
+        
+        .tech-item {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .tech-icon {
+            font-size: 2.5rem;
+            margin-right: 1.5rem;
+            min-width: 60px;
+        }
+        
+        .benefit-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+        
+        .benefit-list li {
+            padding: 1rem;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-list li:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+        
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: #2c3e50;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.95);
+                flex-direction: column;
+                padding: 1rem 0;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu {
+                display: flex;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            z-index: 1001;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <header>
+        <nav class="container">
+            <div class="logo">Granja Semiautomática</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" onclick="showPage('inicio')">Inicio</a></li>
+                <li><a href="#" onclick="showPage('tecnologia')">Tecnología</a></li>
+                <li><a href="#" onclick="showPage('beneficios')">Beneficios</a></li>
+            </ul>
+            <div class="mobile-menu" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- PÁGINA INICIO -->
+    <div id="inicio" class="page active">
+        <div class="hero">
+            <div class="container">
+                <h1>🌾 Granja Semiautomática</h1>
+                <p>Revolucionando la agricultura con tecnología inteligente para un futuro sostenible</p>
+                <a href="#" class="btn" onclick="showPage('tecnologia')">Descubre la Tecnología</a>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="card">
+                <h2>🚀 ¿Qué es una Granja Semiautomática?</h2>
+                <p>Una granja semiautomática es un sistema agrícola innovador que combina la experiencia humana con tecnología avanzada para optimizar la producción de cultivos. Utiliza sensores, sistemas de riego automatizados y monitoreo digital para crear un ambiente de crecimiento perfecto.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💧</div>
+                    <h3>Riego Inteligente</h3>
+                    <p>Sistema automatizado que riega las plantas según sus necesidades específicas, ahorrando agua y optimizando el crecimiento.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌡️</div>
+                    <h3>Control Climático</h3>
+                    <p>Monitoreo constante de temperatura y humedad para mantener las condiciones ideales de cultivo.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Monitoreo Digital</h3>
+                    <p>Aplicación móvil que permite supervisar y controlar la granja desde cualquier lugar.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA TECNOLOGÍA -->
+    <div id="tecnologia" class="page">
+        <div class="hero">
+            <div class="container">
+                <h1>🔧 Tecnología Avanzada</h1>
+                <p>Conoce los sistemas que hacen posible la agricultura del futuro</p>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="tech-section">
+                <div class="card">
+                    <h2>Componentes Principales</h2>
+                    
+                    <div class="tech-item">
+                        <div class="tech-icon">🌱</div>
+                        <div>
+                            <h3>Sensores de Humedad del Suelo</h3>
+                            <p>Detectan automáticamente cuándo las plantas necesitan agua, activando el sistema de riego solo cuando es necesario.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-icon">☁️</div>
+                        <div>
+                            <h3>Estación Meteorológica</h3>
+                            <p>Monitorea temperatura, humedad ambiental, presión atmosférica y velocidad del viento para optimizar las condiciones de cultivo.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-icon">💻</div>
+                        <div>
+                            <h3>Sistema de Control Central</h3>
+                            <p>Microcontrolador Arduino o Raspberry Pi que procesa datos de sensores y controla todos los sistemas automáticamente.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-icon">🚿</div>
+                        <div>
+                            <h3>Sistema de Riego por Goteo</h3>
+                            <p>Red de tuberías y goteros que distribuyen agua de forma eficiente directamente a las raíces de las plantas.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-icon">📡</div>
+                        <div>
+                            <h3>Conectividad IoT</h3>
+                            <p>Conexión a internet que permite monitoreo remoto y envío de alertas al smartphone del agricultor.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA BENEFICIOS -->
+    <div id="beneficios" class="page">
+        <div class="hero">
+            <div class="container">
+                <h1>🌍 Beneficios Múltiples</h1>
+                <p>Impacto positivo en el medio ambiente, la economía y la sociedad</p>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="card">
+                <h2>🌿 Beneficios Ambientales</h2>
+                <ul class="benefit-list">
+                    <li><strong>Ahorro de Agua:</strong> Hasta 50% menos consumo de agua comparado con métodos tradicionales</li>
+                    <li><strong>Reducción de Pesticidas:</strong> Monitoreo preciso reduce la necesidad de químicos</li>
+                    <li><strong>Menor Huella de Carbono:</strong> Optimización de recursos reduce emisiones</li>
+                    <li><strong>Conservación del Suelo:</strong> Riego preciso previene erosión y salinización</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>💰 Beneficios Económicos</h2>
+                <ul class="benefit-list">
+                    <li><strong>Mayor Productividad:</strong> Hasta 30% más rendimiento por hectárea</li>
+                    <li><strong>Reducción de Costos:</strong> Menos gasto en agua, fertilizantes y mano de obra</li>
+                    <li><strong>Calidad Mejorada:</strong> Productos más uniformes y de mejor calidad</li>
+                    <li><strong>Menos Pérdidas:</strong> Monitoreo constante previene enfermedades y plagas</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>👥 Beneficios Sociales</h2>
+                <ul class="benefit-list">
+                    <li><strong>Seguridad Alimentaria:</strong> Producción más estable y predecible</li>
+                    <li><strong>Agricultura Urbana:</strong> Posibilita cultivo en espacios reducidos</li>
+                    <li><strong>Educación Tecnológica:</strong> Enseña habilidades digitales a agricultores</li>
+                    <li><strong>Trabajo Menos Físico:</strong> Reduce la carga de trabajo manual</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Granja Semiautomática - Proyecto Educativo | Desarrollado con ❤️ para el aprendizaje</p>
+        </div>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            // Ocultar todas las páginas
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Mostrar la página seleccionada
+            document.getElementById(pageId).classList.add('active');
+            
+            // Actualizar navegación activa
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => link.style.color = '#2c3e50');
+            event.target.style.color = '#27ae60';
+            
+            // Cerrar menú móvil si está abierto
+            document.getElementById('navLinks').classList.remove('active');
+        }
+        
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+        
+        // Barra de progreso de scroll
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+        
+        // Efectos de animación al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observar elementos para animaciones
+        document.addEventListener('DOMContentLoaded', () => {
+            const animateElements = document.querySelectorAll('.card, .feature-card, .tech-item');
+            animateElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+        
+        // Efecto de escritura para el título principal
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+        
+        // Inicializar efectos cuando la página carga
+        window.addEventListener('load', () => {
+            const mainTitle = document.querySelector('.hero h1');
+            if (mainTitle) {
+                const originalText = mainTitle.textContent;
+                typeWriter(mainTitle, originalText, 80);
+            }
+        });
+    </script>
+</body>
+</html>
